@@ -6,13 +6,22 @@ This is a simple web app that allows you to switch on/off GPIO pins using webpag
 - Set up pins (name, ordering, etc.) and control them remotely from lan
 - Set up telegram bot (just token and your id) and control pins form anywhere
 - Set up sheduled pin tasks in admin panel and enable-disable them remotely 
-- Connect dht sensor to gpio4 (board7) and see actual data and set up pin tasks
+- Connect  sensor to gpio4 (board7) - see actual data and set up pin triggers
 
-All this features (exept basic web app and api) can be easy disabled in settings if you don't need them.
+All this features (except basic web app) can be easy disabled in settings if you don't need them.
 
 App uses Django's built-in devserver with forced single-thread mode, to avoid possibly conflicts with pin commands. Works fast enough.
 
+Usage with full mode (app and 3 background processes) ~ 35Mb RAM
+
 ## Installation
+
+Requires installed locales ru_RU.UTF-8 and/or en_US.UTF-8 (you can install them in raspi-config)
+
+Also don't forget set up timezone (in raspi-config)
+
+After that reboot and start to install
+
 Tested on PiZero, Pi4B (Raspbian OS) and PC (Ubuntu 20.04)
 ```
 cd ~/
@@ -24,6 +33,7 @@ cd PinWeb
 ```
 
 PinWeb requires to run just python3,7+ and some pip-libraries.
+
 
 ```sudo apt update```
 
