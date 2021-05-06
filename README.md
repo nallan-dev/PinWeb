@@ -10,6 +10,8 @@ This is a simple web app that allows you to switch on/off GPIO pins using webpag
 
 All this features (exept basic web app and api) can be easy disabled in settings if you don't need them.
 
+App uses Django's built-in devserver with forced single-thread mode, to avoid possibly conflicts with pin commands. Works fast enough.
+
 ## Installation
 Tested on PiZero, Pi4B (Raspbian OS) and PC (Ubuntu 20.04)
 ```
@@ -31,7 +33,7 @@ With some extras for paspberry pi:
 - for pins and DHT sensor support:
 ```sudo apt install pigpio python-pigpio python3-pigpio```
 
-Make venv then install the python dependencies and start the app:
+Make venv then install python dependencies and start the app:
 (if you want to test this app on PC - use python3.7+_requirements_PC.txt)
 
 ```
@@ -59,6 +61,7 @@ Starting development server at http://0.0.0.0:8080/
 
 So app is working and you can check it  with browser.
 To stop app push cntrl+c keyboard interrupt (maybe several times)
+
 Admin panel - User admin password 123454321
 ## Run app as service
 
@@ -77,11 +80,17 @@ sudo cp systemctl_samples/PinWeb.service /etc/systemd/system/PinWeb.service
 sudo systemctl daemon-reload
 ```
 Now you can control this app like:
+
 sudo systemctl enable PinWeb  # add to autostart on boot
+
 sudo systemctl start PinWeb
+
 sudo systemctl stop PinWeb
+
 sudo systemctl restart PinWeb
+
 sudo systemctl disable PinWeb  # remove from autostart after boot
+
 sudo systemctl status PinWeb
 
 Restart required after any changes in settings.py or changing bot token via admin panel.
@@ -91,10 +100,14 @@ Restart required after any changes in settings.py or changing bot token via admi
 It's very simple - you can get all information about configured pins (and schedules etc.) in JSON by GET '/get_report' url. To make action just send POST to '/' with data:
 - state=1 (or 0) pin state and
 - board_num=int (pin board num);
+
 or
+
 - state=1 (or 0) state and
 - sched_id=int (schedule task id);
+
 or
+
 - state=1 (or 0) state and
 - temper_id=int (sensor task id).
 
