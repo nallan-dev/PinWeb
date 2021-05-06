@@ -43,7 +43,7 @@ class PinData(models.Model):
     class Meta:
         ordering = ['order_id']
         verbose_name = t('Настройка пина')
-        verbose_name_plural = '  ' + t('Настройки пинов')
+        verbose_name_plural = '    ' + t('Настройки пинов')
 
     def __str__(self):
         return self.command
@@ -55,7 +55,7 @@ class PinData(models.Model):
     def as_dict(self):
         return {'order_id': self.order_id,
                 'board_num': self.board_num,
-                'command': self.command,
+                'name': self.command,
                 'comment': self.comment,
                 'state': self.state,
                 'command_verbose': self.action_name}

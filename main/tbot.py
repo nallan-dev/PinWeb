@@ -59,8 +59,8 @@ def form_keyboard_and_command_list(relay_data):
     rows_list = []
     for relay in relay_data['pin_data']:
         cmd, cmd_opp = (ON_S, OFF_S) if relay['state'] else (OFF_S, ON_S)
-        cmd_str = cmd + ' ' + relay['command'].lower()
-        cmd_str_opposite = cmd_opp + ' ' + relay['command'].lower()
+        cmd_str = cmd + ' ' + relay['name'].lower()
+        cmd_str_opposite = cmd_opp + ' ' + relay['name'].lower()
         rows_list.append(cmd_str)
         relay_opp = copy.deepcopy(relay)
         relay_opp['state'] = not relay_opp['state']
@@ -69,7 +69,9 @@ def form_keyboard_and_command_list(relay_data):
     for row in chunks(rows_list, 2):
         keyboard.row(*row)
     keyboard.row(t('Обновить статус'))
-    if relay_data['use_sensor'] or relay_data['use_schedule']:
+    if (relay_data['use_sensor'] or relay_data['use_schedule']) and \
+                                    (relay_data.get('schedule_data', []) or
+                                     relay_data.get('temper_data', [])):
         keyboard.row(t('Автоматические переключения'))
     relay_data['relay_keyboard'] = keyboard
     relay_data['relay_valid_commands'] = valid_commands
@@ -77,13 +79,13 @@ def form_keyboard_and_command_list(relay_data):
 
 
 def form_keyboard_and_timers_report(relay_data):
+    if not relay_data['use_schedule'] and not relay_data['use_schedule']:
+        return relay_data
+
     keyboard = telebot.types.ReplyKeyboardMarkup(resize_keyboard=True)
     command_dict = {}
     schedules = relay_data.get('schedule_data', [])
     temper_data = relay_data.get('temper_data', [])
-    if not schedules and not temper_data:
-        return relay_data
-
     msg = t('Плановые задачи') + ':\n\n'
     i = 0
     for i, s in enumerate(schedules):
@@ -141,7 +143,7 @@ def form_sensor_msg(relay_data):
 
 
 def switch_pin(relay):
-    r = requests.post(WEB_APP_ADDR, data={'pin_num': relay['board_num'],
+    r = requests.post(WEB_APP_ADDR, data={'board_num': relay['board_num'],
                                           'state': int(relay['state'])},
                       verify=False, timeout=3)
     return r
@@ -202,7 +204,7 @@ def run(message):
                          'ACCESS DENIED - ' + str(message.chat.id) + err)
         return
     # =================================================================
-    if message.text in r['relay_valid_commands'].keys():
+    if message.text in r.get('relay_valid_commands', {}).keys():
         handle_relay_switch()
     elif message.text in (t('Обновить статус'), t('Назад')):
         text = 'OK' + '  ' + r.get('temper_msg', '')
@@ -210,7 +212,7 @@ def run(message):
                          reply_markup=r['relay_keyboard'])
     elif message.text == t('Автоматические переключения'):
         handle_timer_list()
-    elif message.text in r['sched_valid_commands'].keys():
+    elif message.text in r.get('sched_valid_commands', {}).keys():
         handle_timer_switch()
     elif message.text == '/start':
         bot.send_message(message.chat.id, t('Погнали!'),

@@ -17,12 +17,12 @@ def get_params():
 
 
 def switch_pin(pin_num, state):
-    r = requests.post(WEB_APP_ADDR, timeout=3, data={'pin_num': pin_num,
+    r = requests.post(WEB_APP_ADDR, timeout=3, data={'board_num': pin_num,
                                                      'state': state})
     return r
 
 
-def process_jobs(data):
+def process_jobs(data, only_temper):
     def get_relay(board_num):
         for relay in relays:
             if relay['board_num'] == board_num:
@@ -65,7 +65,7 @@ def process_jobs(data):
 
     relays = data['pin_data']
 
-    if USE_SCHEDULE:
+    if USE_SCHEDULE and not only_temper:
         schedules = [elem for elem in data['schedule_data'] if elem['active']]
         for sched in schedules:
             if pycron.is_now(sched['cron_time']):
@@ -86,13 +86,13 @@ def process_jobs(data):
                         process_temper(temper)
 
 
-def run():
+def run(only_temper=False):
     data = get_params()
-    process_jobs(data)
+    process_jobs(data, only_temper)
 
 
 if __name__ == '__main__':
-    time.sleep(10)
+    time.sleep(3)
     if USE_SCHEDULE or USE_SENSOR:
         while True:
             second = datetime.datetime.now().second
@@ -106,7 +106,7 @@ if __name__ == '__main__':
             elif second % 5 == 0:  # every 5 seconds
                 if USE_SENSOR:
                     try:
-                        run()
+                        run(only_temper=True)
                     except Exception as e:
                         print(type(e), e, traceback.format_exc())
                 time.sleep(1.1)

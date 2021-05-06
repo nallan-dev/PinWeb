@@ -8,7 +8,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['*']  # Only for private network!
 INVERSE_STATE = False  # invert GPIO (if your device activates by GPIO.LOW)
 WEB_APP_PORT = 8080  # Port of this Django-app
-FAKE_GPIO = False  # For use on raspberry set to False here
+FAKE_GPIO = False  # For use on raspberry set to False here to use real GPIO
 USE_SCHEDULE = False  # Don't show in interfaces and don't launch in background
 USE_SENSOR = False  # Same as schedule - use sensor DHT(11,21,22) (GPIO-4)
 USE_BOT = False  # launch telegram bot process in background
@@ -17,7 +17,8 @@ USE_BOT = False  # launch telegram bot process in background
 
 # Internationalization
 LANGUAGE = 'en'  # supports only 'ru' and 'en'
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'Europe/Moscow'  # 'UTC' etc.
+# https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
 # All 26 GPIO BOARD nums available for use (except GPIO4 (BOARD7) for sensor)
 BOARD_NUMS = [3, 5, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24, 26, 29,

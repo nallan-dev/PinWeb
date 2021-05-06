@@ -29,10 +29,11 @@ class PinDataAdmin(admin.ModelAdmin):
         return formfield
 
 
-@admin.register(BotConfig)
-class BotConfigAdmin(admin.ModelAdmin):
-    list_display = ('id', 'value')
-    list_editable = ('value',)
+if settings.USE_BOT:
+    @admin.register(BotConfig)
+    class BotConfigAdmin(admin.ModelAdmin):
+        list_display = ('id', 'value')
+        list_editable = ('value',)
 
 
 if settings.USE_SCHEDULE:

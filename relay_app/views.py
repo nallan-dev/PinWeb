@@ -18,7 +18,7 @@ def switch(request):
         return render(request, template_name, context=context)
 
     def post():
-        pin_num = request.POST.get('pin_num')
+        pin_num = request.POST.get('board_num')
         schedule_id = request.POST.get('sched_id')
         temper_id = request.POST.get('temper_id')
         state = request.POST.get('state')
