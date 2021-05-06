@@ -1,0 +1,123 @@
+
+      <div class="relay">
+        <a name="relay"></a>
+      {% for row in pin_data %}
+
+        <div class="row">
+              <div class="col1">{{ forloop.counter }}</div>
+              <div class="col2">{{ row.command }}</div>
+              <div class="col3">
+                <form method="post">
+                {% if row.state %}
+                    <input class="disable" type="submit" value="">
+                    <input type="hidden" value="0" name="state">
+                {% else %}
+                    <input class="enable" type="submit" value="">
+                    <input type="hidden" value="1" name="state">
+                 {% endif %}
+                    <input type="hidden" value="{{ row.board_num }}" name="pin_num">
+                    <input type="hidden" value="true" name="from_button">
+                </form>
+              </div>
+          </div>
+
+      {% empty %}
+                <p class="settings">{{ no_switches }}</p>
+      {% endfor %}
+
+        <p class="settings">
+          {% if use_sensor %}
+            <span>t: {{current_temper.temp}}℃</span>
+          {% endif %}
+            <a href="/settings">
+              <img src="/static/img/settings.png" width="100" height="100" alt="Настройки">
+            </a>
+          {% if use_sensor %}
+            <span>h: {{ current_temper.humidity }}%</span>
+          {% endif %}
+        </p>
+        {% if use_sensor %}
+          <p class="settings" style="font-size: 15px; {% if current_temper.expired %}color: #ff7b7b;{% endif %}">
+            {% if current_temper.expired %}
+              {{ sensor_expired }}! {{ current_temper.verbose_datetime }}
+            {% else %}
+              ({{ updated }} {{ current_temper.verbose_time }})
+            {% endif %}
+          </p>
+        {% endif %}
+
+      </div>
+
+
+      {% if use_schedule %}
+        <div class="timer">
+        <a name="timer"></a>
+        <h4>{{ schedule_tasks_title }}:</h4>
+        {% for sched in schedule_data %}
+
+          <div class="row">
+              <div class="col1">{{ forloop.counter }}</div>
+              <div class="col2">{{ sched.full_report }}</div>
+              <div class="col3">
+                <form method="post">
+                {% if sched.active %}
+                    <input class="disable" type="submit" value="">
+                    <input type="hidden" value="0" name="state">
+                {% else %}
+                    <input class="enable" type="submit" value="">
+                    <input type="hidden" value="1" name="state">
+                {% endif %}
+                <input type="hidden" value="{{ sched.id }}" name="sched_id">
+                <input type="hidden" value="true" name="from_button">
+                </form>
+              </div>
+          </div>
+
+        {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if use_sensor %}
+        <div class="timer temper">
+        <a name="temper"></a>
+        <h4> {{ temper_tasks_title }}:</h4>
+        {% for temper in temper_data %}
+
+          <div class="row">
+              <div class="col1">{{ forloop.counter }}</div>
+              <div class="col2">{{ temper.full_report }}</div>
+              <div class="col3">
+                <form method="post">
+                {% if temper.active %}
+                    <input class="disable" type="submit" value="">
+                    <input type="hidden" value="0" name="state">
+                {% else %}
+                    <input class="enable" type="submit" value="">
+                    <input type="hidden" value="1" name="state">
+                {% endif %}
+                <input type="hidden" value="{{ temper.id }}" name="temper_id">
+                <input type="hidden" value="true" name="from_button">
+                </form>
+              </div>
+          </div>
+        {% endfor %}
+        </div>
+      {% endif %}
+
+      <script>
+$('form').submit(function(e) {
+    var $form = $(this);
+    var form_data = $form.serialize().replace("&from_button", "&html_for_ajax");
+    $.ajax({
+      type: $form.attr('method'),
+      url: $form.attr('action'),
+      data: form_data
+    }).done(function(data) {
+      $('.container').html(data);
+    }).fail(function() {
+      console.log('fail');
+    });
+    //отмена действия по умолчанию для кнопки submit
+    e.preventDefault();
+});
+      </script>

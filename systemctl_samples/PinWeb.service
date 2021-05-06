@@ -1,0 +1,16 @@
+[Unit]
+Description=Python web app GPIO switcher and administration with optional sheduled task, telegram_bot, and sensor
+After=multi-user.target
+
+[Service]
+Type=idle
+User=root
+Group=root
+WorkingDirectory=/home/pi/PinWeb
+ExecStart=python3 run_app.py
+Restart=on-failure
+RestartSec=5s
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
