@@ -26,8 +26,10 @@ cd PinWeb
 PinWeb requires to run just python3,7+ and some pip-libraries.
 
 ```sudo apt update```
+
 ```sudo apt install python3-pip```
-```apt-get install python3-venv```
+
+```sudo apt-get install python3-venv```
 
 With some extras for paspberry pi:
 - for pins and DHT sensor support:
