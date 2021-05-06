@@ -6,12 +6,12 @@ from pathlib import Path
 # ==========================================================================
 DEBUG = False
 ALLOWED_HOSTS = ['*']  # Only for private network!
-INVERSE_STATE = True  # invert GPIO (if your device activates by GPIO.LOW)
+INVERSE_STATE = False  # invert GPIO (if your device activates by GPIO.LOW)
 WEB_APP_PORT = 8080  # Port of this Django-app
-FAKE_GPIO = True  # For use on raspberry set to False here
-USE_SCHEDULE = True  # Don't show in interfaces and don't launch in background
-USE_SENSOR = True  # Same as schedule - use sensor DHT(11,21,22) (GPIO-4)
-USE_BOT = True  # launch telegram bot process in background
+FAKE_GPIO = False  # For use on raspberry set to False here
+USE_SCHEDULE = False  # Don't show in interfaces and don't launch in background
+USE_SENSOR = False  # Same as schedule - use sensor DHT(11,21,22) (GPIO-4)
+USE_BOT = False  # launch telegram bot process in background
 
 # Telegram bot conf in web admin panel (if change token - app restart required)
 

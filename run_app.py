@@ -18,7 +18,7 @@ SHEDULE_FILEPATH = str(BASE_DIR / 'main' / 'schedule_job_worker.py')
 TEMPER_FILEPATH = str(BASE_DIR / 'main' / 'sensor_data_job_worker.py')
 BOT_FILEPATH = str(BASE_DIR / 'main' / 'tbot.py')
 
-ONLY_APP = True  # don't spawn subprocess (for debug reason)
+ONLY_APP = False  # don't spawn subprocess (for debug reason)
 if __name__ == '__main__':
     if len(sys.argv) == 1:
         if not ONLY_APP:
