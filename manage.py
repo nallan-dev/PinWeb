@@ -2,6 +2,9 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
+from main.settings import BASE_DIR
+sys.path.append(str(BASE_DIR))
+sys.path.append(str(BASE_DIR / 'main'))
 
 
 def main():

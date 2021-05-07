@@ -16,9 +16,11 @@ admin.AdminSite.index_title = t('Приложения')
 
 @admin.register(PinData)
 class PinDataAdmin(admin.ModelAdmin):
-    list_display = ('command', 'order_id', 'board_num', 'state', 'visible')
+    list_display = ('command', 'order_id', 'board_num', 'state',
+                    'invert_state', 'visible')
     # list_editable = ('command', 'board_num', 'state', 'visible')
-    fields = (('order_id', 'board_num', 'visible'), 'command', 'comment')
+    fields = (('order_id', 'board_num'), ('visible', 'invert_state'),
+              'command', 'comment')
     list_filter = ('visible', 'state')
 
     def formfield_for_dbfield(self, db_field, **kwargs):

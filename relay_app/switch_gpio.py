@@ -44,18 +44,12 @@ else:
 GPIO.setmode(GPIO.BOARD)
 
 
-def clean_state(state):
-    state = bool(int(state))
-    if settings.INVERSE_STATE:
-        state = not state
-    return int(state)
-
-
-def switch_gpio(board_num, state):
+def switch_gpio(board_num, state, invert_state):
     if board_num not in settings.BOARD_NUMS:
         return 1
     try:
-        state = clean_state(state)
+        state = bool(int(state))
+        state = not state if invert_state else state
         if board_num not in active_pins:
             GPIO.setup(board_num, GPIO.OUT, initial=state)
             active_pins[board_num] = state

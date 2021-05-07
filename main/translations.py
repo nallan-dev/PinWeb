@@ -43,8 +43,11 @@ RU_EN_DICT = {
     'Текущее состояние': 'Current state',
     'Включен или выключен': 'On or off',
     'Активен': 'Active',
-    'Отображать ли в интерфейсах? (GPIO пин инициализируется в любом случае)'
-        '': 'Display in interfaces? (GPIO pin is initialized anyway)',
+    'Отображать ли в интерфейсах?': 'Display in interfaces?',
+    'Инвертировать состояние': 'Invert state',
+    'Инвертировать состояние пинов на уровне GPIO (т.е. "Включенный пин" = '
+        'GPIO.LOW (gnd))': 'Invert state at GPIO-level (e.g. "Enabled pin" = '
+                           'GPIO.LOW (gnd))',
     'Настройка пина': 'Pin config',
     'Настройки пинов': 'Pin configs',
 

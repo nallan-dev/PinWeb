@@ -1,4 +1,6 @@
-﻿from django.db import models
+﻿import sys
+
+from django.db import models
 from django.conf import settings
 from .validators import validate_cron, CRON_URL
 from .switch_gpio import switch_gpio
@@ -8,7 +10,7 @@ from main.translations import t
 class PinDataQuerySet(models.QuerySet):
     def delete(self, *args, **kwargs):
         for obj in self:
-            ret_code = switch_gpio(obj.board_num, False)
+            ret_code = switch_gpio(obj.board_num, False, obj.invert_state)
             if ret_code:  # assume error here
                 return  # dont delete
         super(PinDataQuerySet, self).delete()
@@ -35,10 +37,13 @@ class PinData(models.Model):
     state = models.BooleanField(default=False,
                                 verbose_name=t('Текущее состояние'),
                                 help_text=t('Включен или выключен'))
+    invert_state = models.BooleanField(default=False,
+                                   verbose_name=t('Инвертировать состояние'),
+                                   help_text=t('Инвертировать состояние пинов'
+                                               ' на уровне GPIO (т.е. "Включ'
+                                               'енный пин" = GPIO.LOW (gnd))'))
     visible = models.BooleanField(default=True, verbose_name=t('Активен'),
-                                  help_text=t('Отображать ли в интерфейсах? ('
-                                              'GPIO пин инициализируется в '
-                                              'любом случае)'))
+                                  help_text=t('Отображать ли в интерфейсах?'))
 
     class Meta:
         ordering = ['order_id']
@@ -58,16 +63,19 @@ class PinData(models.Model):
                 'name': self.command,
                 'comment': self.comment,
                 'state': self.state,
-                'command_verbose': self.action_name}
+                'command_verbose': self.action_name,
+                'invert_state': self.invert_state}
 
     def save(self, *args, **kwargs):
-        ret_code = switch_gpio(self.board_num, self.state)
+        ret_code = switch_gpio(self.board_num, self.state, self.invert_state)
         if ret_code:  # assume error here
             return
+        if not self.visible:
+            self.state = False
         super(PinData, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        ret_code = switch_gpio(self.board_num, False)
+        ret_code = switch_gpio(self.board_num, False, self.invert_state)
         if ret_code:  # assume error here
             return
         super(PinData, self).delete(*args, **kwargs)
@@ -279,10 +287,14 @@ class TemperConfig(models.Model):
 
 def init_pin_state():
     try:
-        for elem in PinData.objects.all().only('board_num', 'state'):
-            switch_gpio(elem.board_num, elem.state)
+        for elem in PinData.objects.filter(visible=True):
+            switch_gpio(elem.board_num, elem.state, elem.invert_state)
     except Exception as e:
         print('In init_pin_state warning:', e)
 
 
-init_pin_state()  # run once when app process starts
+if 'runserver' in sys.argv:
+    # run once when app process starts (delay to load models first)
+    import threading
+    delayed_func = threading.Timer(interval=10, function=init_pin_state)
+    delayed_func.start()
