@@ -232,8 +232,9 @@ else:
                         "status": STATUS_V[status]}
                 json_data = json.dumps(data, indent=4)
                 print(json_data)
-                with open(SENSOR_OUT_PATH, 'w') as f:
-                    f.write(json_data)
+                if temper_c or humidity:
+                    with open(SENSOR_OUT_PATH, 'w') as f:
+                        f.write(json_data)
             except KeyboardInterrupt as e:
                 break
             except Exception as error:
